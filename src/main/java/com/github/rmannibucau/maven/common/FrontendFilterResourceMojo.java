@@ -14,6 +14,7 @@ public class FrontendFilterResourceMojo extends BaseFilter {
     public void execute() {
         Stream.of(new File(project.getBasedir(), "src/main/frontend/package-template.json"),
                 new File(project.getBasedir(), "package-template.json")).filter(File::exists)
-                .forEach(template -> doFilter(template, new File(template, template.getName().replace("-template", ""))));
+                .forEach(template -> doFilter(template,
+                        new File(template.getParentFile(), template.getName().replace("-template", ""))));
     }
 }
