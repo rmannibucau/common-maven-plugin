@@ -8,6 +8,7 @@
   <name>Common Utilities for Maven builds</name>
   <description>Some common maven utilities.</description>
   <url>https://github.com/rmannibucau/common-maven-plugin</url>
+  <packaging>maven-plugin</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -84,7 +85,7 @@
           </execution>
         </executions>
         <configuration>
-          <goalPrefix>jaxb-optimize</goalPrefix>
+          <goalPrefix>rmannibucau-common</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
         </configuration>
       </plugin>
