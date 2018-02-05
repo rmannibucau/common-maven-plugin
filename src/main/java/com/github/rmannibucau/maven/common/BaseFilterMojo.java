@@ -5,15 +5,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.text.StrSubstitutor;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.utils.io.FileUtils;
-import org.codehaus.plexus.interpolation.InterpolationException;
-import org.codehaus.plexus.interpolation.PropertiesBasedValueSource;
-import org.codehaus.plexus.interpolation.StringSearchInterpolator;
 
 public abstract class BaseFilterMojo extends AbstractMojo {
 
@@ -23,19 +23,31 @@ public abstract class BaseFilterMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 
+    private volatile StrSubstitutor strSubstitutor;
+
     protected void doFilter(final File from, final File to) {
+        if (strSubstitutor == null) {
+            synchronized (this) {
+                if (strSubstitutor == null) {
+                    strSubstitutor = new StrSubstitutor(new HashMap<String, Object>() {
+
+                        {
+                            putAll(Map.class.cast(project.getProperties()));
+                            putAll(Map.class.cast(session.getSystemProperties()));
+                            putAll(Map.class.cast(session.getUserProperties()));
+                        }
+                    });
+                }
+            }
+        }
         try {
             final String content = FileUtils.fileRead(from);
             FileUtils.forceMkdir(to.getParentFile());
-            final StringSearchInterpolator interpolator = new StringSearchInterpolator();
-            interpolator.addValueSource(new PropertiesBasedValueSource(project.getProperties()));
-            interpolator.addValueSource(new PropertiesBasedValueSource(session.getSystemProperties()));
-            interpolator.addValueSource(new PropertiesBasedValueSource(session.getUserProperties()));
-            final String filtered = interpolator.interpolate(content);
+            final String filtered = strSubstitutor.replace(content);
             try (final Writer writer = new BufferedWriter(new FileWriter(to))) {
                 writer.write(filtered);
             }
-        } catch (final IOException | InterpolationException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
