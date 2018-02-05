@@ -1,7 +1,11 @@
 package com.github.rmannibucau.maven.common;
 
+import static java.util.stream.Collectors.joining;
+
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -13,7 +17,6 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.utils.io.FileUtils;
 
 public abstract class BaseFilter extends AbstractMojo {
 
@@ -40,9 +43,9 @@ public abstract class BaseFilter extends AbstractMojo {
                 }
             }
         }
-        try {
-            final String content = FileUtils.fileRead(from);
-            FileUtils.forceMkdir(to.getParentFile());
+        try (final BufferedReader reader = new BufferedReader(new FileReader(from))) {
+            final String content = reader.lines().collect(joining("\n"));
+            to.getParentFile().mkdirs();
             final String filtered = strSubstitutor.replace(content);
             try (final Writer writer = new BufferedWriter(new FileWriter(to))) {
                 writer.write(filtered);
