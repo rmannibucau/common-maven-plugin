@@ -11,7 +11,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 @Mojo(defaultPhase = INITIALIZE, name = "filter")
-public class FilterResourceMojo extends BaseFilterMojo {
+public class FilterResourceMojo extends BaseFilter {
 
     @Parameter(defaultValue = "${session}", readonly = true)
     private MavenSession session;

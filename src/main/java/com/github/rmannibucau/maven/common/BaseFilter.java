@@ -15,12 +15,12 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.utils.io.FileUtils;
 
-public abstract class BaseFilterMojo extends AbstractMojo {
+public abstract class BaseFilter extends AbstractMojo {
 
-    @Parameter(defaultValue = "${session}", readonly = true)
+    @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected MavenSession session;
 
-    @Parameter(defaultValue = "${project}", readonly = true)
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
     protected MavenProject project;
 
     private volatile StrSubstitutor strSubstitutor;
@@ -47,6 +47,7 @@ public abstract class BaseFilterMojo extends AbstractMojo {
             try (final Writer writer = new BufferedWriter(new FileWriter(to))) {
                 writer.write(filtered);
             }
+            getLog().info("Created " + to.getAbsolutePath());
         } catch (final IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }

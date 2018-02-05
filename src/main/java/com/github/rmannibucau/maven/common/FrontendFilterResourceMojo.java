@@ -5,20 +5,11 @@ import static org.apache.maven.plugins.annotations.LifecyclePhase.INITIALIZE;
 import java.io.File;
 import java.util.stream.Stream;
 
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 @Mojo(defaultPhase = INITIALIZE, name = "frontend-filter")
-public class FrontendFilterResourceMojo extends BaseFilterMojo {
-
-    @Parameter(defaultValue = "${session}", readonly = true)
-    private MavenSession session;
-
-    @Parameter(defaultValue = "${project}", readonly = true)
-    private MavenProject project;
+public class FrontendFilterResourceMojo extends BaseFilter {
 
     @Override
     public void execute() throws MojoExecutionException {
