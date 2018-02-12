@@ -4,20 +4,11 @@ import static org.apache.maven.plugins.annotations.LifecyclePhase.INITIALIZE;
 
 import java.io.File;
 
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 @Mojo(defaultPhase = INITIALIZE, name = "filter")
 public class FilterResourceMojo extends BaseFilter {
-
-    @Parameter(defaultValue = "${session}", readonly = true)
-    private MavenSession session;
-
-    @Parameter(defaultValue = "${project}", readonly = true)
-    private MavenProject project;
 
     @Parameter(required = true, property = "rmannibucau.common.filter.from")
     private File from;
@@ -26,7 +17,7 @@ public class FilterResourceMojo extends BaseFilter {
     private File to;
 
     @Override
-    public void execute() throws MojoExecutionException {
+    public void execute() {
         if (!from.exists()) {
             throw new IllegalArgumentException(from + " doesn't exist");
         }
