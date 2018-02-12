@@ -35,6 +35,11 @@ public abstract class BaseFilter extends AbstractMojo {
                     strSubstitutor = new StrSubstitutor(new HashMap<String, Object>() {
 
                         {
+                            put("project.basedir", project.getBasedir().getAbsolutePath());
+                            put("project.build.finalName", project.getBuild().getFinalName());
+                            put("project.groupId", project.getGroupId());
+                            put("project.artifactId", project.getArtifactId());
+                            put("project.version", project.getVersion());
                             putAll(Map.class.cast(project.getProperties()));
                             putAll(Map.class.cast(session.getSystemProperties()));
                             putAll(Map.class.cast(session.getUserProperties()));
